@@ -14,36 +14,36 @@ var trainData = firebase.database();
 
 // 2. Populate Firebase Database with initial data (in this case, I did this via Firebase GUI)
 // 3. Button for adding trains
-$("#add-train-btn").on("click", function() {
+$("#add-train-btn").on("click", function(event) {
   
+  event.preventDefault();
   // Grabs user input
   var trainName = $("#train-name-input").val().trim();
   var destination = $("#destination-input").val().trim();
-  var firstTrainUnix = moment($("#first-train-input").val().trim(), "HH:mm").subtract(10, "years").format("X");
+  var firstTrainUnix = moment($("#first-train-input").val().trim(), "HH:mm").subtract(1, "years").format("X");
   var frequency = $("#frequency-input").val().trim();
 
-  // Creates local "temporary" object for holding train data
-  var newTrain = {
-
+  trainData.ref().push({
+    // Creates local "temporary" object for holding train data
     name: trainName,
     destination: destination,
     firstTrain: firstTrainUnix,
     frequency: frequency
-  };
+ });
 
   // Uploads train data to the database
-  trainData.ref().push(newTrain);
+
 
 
   // Logs everything to console
-  console.log(newTrain.name);
-  console.log(newTrain.destination);
+  console.log(trainName);
+  console.log(destination);
   console.log(firstTrainUnix);
-  console.log(newTrain.frequency);
+  console.log(frequency);
 
   // Alert
   alert("Train successfully added");
-
+ 
   // Clears all of the text-boxes
   $("#train-name-input").val("");
   $("#destination-input").val("");
@@ -54,13 +54,13 @@ $("#add-train-btn").on("click", function() {
   return false;
 });
 
- database.ref().on("child_added", function(childSnapshot, prevChildKey) 
+ trainData.ref().on("child_added", function(childSnapshot, prevChildKey) 
  {
 
   console.log(childSnapshot.val());
 
   var trainName = childSnapshot.val().name;
-  var destination = childSnapshot.val().dsetination;
+  var destination = childSnapshot.val().destination;
   var firstTrainUnix = childSnapshot.val().firstTrain;
   var frequency = childSnapshot.val().frequency;
 
@@ -69,6 +69,6 @@ $("#add-train-btn").on("click", function() {
   console.log(firstTrainUnix);
   console.log(frequency);
 
-  $("#train-table > tbody").append("<tr><td>" + trainName + "<td><td>" + destination + "<td><td>" + firstTrainUnix + "<td><td>" + frequency + "<td><tr>");
+  $("tbody").append("<tr><td>" + trainName + "</td><td>" + destination + "</td><td>" + firstTrainUnix + "</td><td>" + frequency + "</td><tr>");
 
 });
