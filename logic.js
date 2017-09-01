@@ -23,6 +23,7 @@ $("#add-train-btn").on("click", function(event) {
   var firstTrainUnix = moment($("#first-train-input").val().trim(), "HH:mm").subtract(1, "years").format("X");
   var frequency = $("#frequency-input").val().trim();
 
+
   trainData.ref().push({
     // Creates local "temporary" object for holding train data
     name: trainName,
@@ -69,6 +70,20 @@ $("#add-train-btn").on("click", function(event) {
   console.log(firstTrainUnix);
   console.log(frequency);
 
-  $("tbody").append("<tr><td>" + trainName + "</td><td>" + destination + "</td><td>" + firstTrainUnix + "</td><td>" + frequency + "</td><tr>");
+  var timeDifference = moment().diff(moment.unix(firstTrainUnix), "minutes");
+
+  var timeRemaining = moment().diff(moment.unix(firstTrainUnix), "minutes") % frequency;
+
+  var minutesAway = frequency - timeRemaining;
+
+  var trainArrival = moment().add(minutesAway).format("hh:mm A");
+
+  
+ 
+  
+
+  $("tbody").append("<tr><td>" + trainName + "</td><td>" + destination + "</td><td>" + frequency + "</td><td>" + trainArrival + "</td><td>" + minutesAway + "</td></tr>"); 
+
+    
 
 });
